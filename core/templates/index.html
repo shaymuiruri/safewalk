@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeWalk</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="{% static 'images/logo.jpg' %}" alt="SafeWalk Logo" style="width: 80px; height: 80px; border-radius: 10px;">
+            <h1>SafeWalk</h1>
+        </div>
+        <p>Your AI-Powered Safety Companion</p>
+    </header>
+
+    <main class="main-content">
+        <section class="panic-section">
+            <h2>Trigger Panic Mode</h2>
+            <form id="panicForm" method="post" action="{% url 'panic_mode' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="camera-container">
+                    <video id="cameraFeed" autoplay></video>
+                    <canvas id="photoCanvas" style="display: none;"></canvas>
+                </div>
+                <input type="hidden" name="photo" id="photoInput">
+                <input type="hidden" name="latitude" id="latitude">
+                <input type="hidden" name="longitude" id="longitude">
+                <button type="button" class="panic-button" onclick="triggerPanic()">🚨 Trigger Panic Mode</button>
+            </form>
+        </section>
+
+        <section class="results-section">
+            {% if panic_status %}
+                <div class="alert alert-danger">
+                    <strong>{{ panic_status }}</strong>
+                </div>
+            {% endif %}
+
+            {% if safest_route %}
+                <div class="alert alert-success">
+                    <strong>Safest Route:</strong> {{ safest_route }}
+                </div>
+            {% endif %}
+
+            {% if analysis_results %}
+                <div class="analysis-results">
+                    <h3>Photo Analysis</h3>
+                    <p><strong>Objects Detected:</strong> {{ analysis_results.objects|join:", " }}</p>
+                    <p><strong>Captions:</strong> {{ analysis_results.captions|join:", " }}</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 SafeWalk. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Access the camera
+        const video = document.getElementById('cameraFeed');
+        const canvas = document.getElementById('photoCanvas');
+        const photoInput = document.getElementById('photoInput');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing camera: ", err);
+            });
+
+        // Capture photo and geolocation
+        function triggerPanic() {
+            // Capture photo
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(blob => {
+                const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                photoInput.files = dataTransfer.files;
+            });
+
+            // Get geolocation
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    latitudeInput.value = position.coords.latitude;
+                    longitudeInput.value = position.coords.longitude;
+                    document.getElementById('panicForm').submit();
+                }, error => {
+                    alert("Unable to retrieve location.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+</body>
+</html>

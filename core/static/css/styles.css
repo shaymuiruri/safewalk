@@ -1,0 +1,95 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+.header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.header .logo {
+    width: 80px; /* Adjusted width */
+    height: 80px; /* Adjusted height */
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.header .logo img {
+    width: 50px;
+    height: 50px;
+}
+
+.main-content {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.panic-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.camera-container {
+    margin: 20px auto;
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    display: block;
+}
+
+.panic-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.panic-button:hover {
+    background-color: #e60000;
+}
+
+.alert {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.alert-danger {
+    background-color: #ffcccc;
+    color: #990000;
+}
+
+.alert-success {
+    background-color: #ccffcc;
+    color: #006600;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
